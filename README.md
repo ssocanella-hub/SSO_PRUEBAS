@@ -1,2 +1,26 @@
 # SSO_PRUEBAS
-#Quiero crear una pagina web dónde pueda ingresar datos de las inspecciones de Salud y Seguridad Ocupacional que realizamos en las sucursales de la empresa y que me permita descargar un excel con los datos ingresados con el siguiente orden de columnas: ESTADO: No iniciado, En proceso, Finalizado; Prioridad: Muy Alta, Alta, Media y Baja; Fecha de la inspección; Descripción; Responsable; Evidencia: en este apartado que permita cargar imagen en formato jpg; Acción Correctiva; Fecha límite; Resultado: en este apartado permitir que cuando realicen la corrección del hallazgo se pueda cargar una imagen jpg para cerrar la no conformidad; Empresa; Instalaciones; Área/Departamento; Controles Operacionales: Equipo de Protección Personal (EPP), Botiquines, Extintores, Instalaciones, Señalización, Delimitación, Combustibles y Lubricantes; Origen del Hallazgo: Inspección, Auditoría, Comité SSO, Reporte del colaborador, Recorrido, Investigación de incidente/accidente; Clasificación del riesgo: Físico, Químico, Ergonómico, Biológico, Mecánico, Eléctrico, Psicosocial, Locativo, Natural; Conformidad/No conformidad: Conformidad, No conformidad; graficar en la pagina al iniciar la sesión cómo administrador de las Conformidades y No conformidades, Extintores, Botiquines por cada sucursal y también un total por toda la empresa. Así mismo también me permita descargar en PDF por sucursal para poder enviarlo por correo a los responsables.
+
+Aplicación web estática para registrar inspecciones de Salud y Seguridad Ocupacional (SSO) por sucursal.
+
+## Funcionalidades
+
+- Inicio de sesión de administrador (demo): `admin / admin123`.
+- Formulario completo con los campos solicitados para hallazgos SSO.
+- Carga de evidencia y resultado en formato JPG.
+- Persistencia local de registros en `localStorage`.
+- Descarga de Excel con columnas en el orden solicitado.
+- Gráficas al ingresar como administrador:
+  - Conformidades vs No conformidades por sucursal y total empresa.
+  - Extintores y Botiquines por sucursal y total empresa.
+- Descarga de PDF por sucursal para envío a responsables.
+
+## Cómo usar
+
+1. Abrir `index.html` en un navegador moderno.
+2. Ingresar con las credenciales demo.
+3. Registrar inspecciones en el formulario.
+4. Usar los botones de exportación para generar Excel o PDF.
+
+## Nota
+
+Esta versión es cliente puro (sin backend), por lo que los datos se guardan en el navegador local.

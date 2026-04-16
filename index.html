@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Inspecciones SSO</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+  <main class="container">
+    <section id="loginSection" class="card">
+      <h1>Inspecciones de Salud y Seguridad Ocupacional</h1>
+      <p>Inicia sesión como administrador para registrar hallazgos y ver indicadores.</p>
+      <form id="loginForm" class="grid-2">
+        <label>
+          Usuario
+          <input type="text" id="username" required placeholder="admin" />
+        </label>
+        <label>
+          Contraseña
+          <input type="password" id="password" required placeholder="admin123" />
+        </label>
+        <button type="submit">Ingresar</button>
+      </form>
+      <small class="hint">Credenciales demo: admin / admin123</small>
+      <p id="loginError" class="error"></p>
+    </section>
+
+    <section id="appSection" class="hidden">
+      <div class="header-row">
+        <h2>Panel SSO</h2>
+        <button id="logoutBtn" class="danger">Cerrar sesión</button>
+      </div>
+
+      <div class="card">
+        <h3>Resumen gráfico (Administrador)</h3>
+        <div class="charts-grid">
+          <canvas id="conformidadChart"></canvas>
+          <canvas id="equiposChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Registrar inspección</h3>
+        <form id="inspectionForm" class="grid-3">
+          <label>Estado
+            <select id="estado" required>
+              <option value="No iniciado">No iniciado</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Finalizado">Finalizado</option>
+            </select>
+          </label>
+          <label>Prioridad
+            <select id="prioridad" required>
+              <option value="Muy Alta">Muy Alta</option>
+              <option value="Alta">Alta</option>
+              <option value="Media">Media</option>
+              <option value="Baja">Baja</option>
+            </select>
+          </label>
+          <label>Fecha de la inspección
+            <input type="date" id="fechaInspeccion" required />
+          </label>
+
+          <label class="full">Descripción
+            <textarea id="descripcion" required></textarea>
+          </label>
+          <label>Responsable
+            <input type="text" id="responsable" required />
+          </label>
+          <label>Evidencia (JPG)
+            <input type="file" id="evidencia" accept="image/jpeg" />
+          </label>
+
+          <label class="full">Acción Correctiva
+            <textarea id="accionCorrectiva" required></textarea>
+          </label>
+          <label>Fecha límite
+            <input type="date" id="fechaLimite" required />
+          </label>
+          <label>Resultado (JPG)
+            <input type="file" id="resultado" accept="image/jpeg" />
+          </label>
+
+          <label>Empresa
+            <input type="text" id="empresa" required />
+          </label>
+          <label>Instalaciones / Sucursal
+            <input type="text" id="instalaciones" required />
+          </label>
+          <label>Área/Departamento
+            <input type="text" id="area" required />
+          </label>
+
+          <label>Control Operacional
+            <select id="controlOperacional" required>
+              <option>Equipo de Protección Personal (EPP)</option>
+              <option>Botiquines</option>
+              <option>Extintores</option>
+              <option>Instalaciones</option>
+              <option>Señalización</option>
+              <option>Delimitación</option>
+              <option>Combustibles y Lubricantes</option>
+            </select>
+          </label>
+
+          <label>Origen del Hallazgo
+            <select id="origen" required>
+              <option>Inspección</option>
+              <option>Auditoría</option>
+              <option>Comité SSO</option>
+              <option>Reporte del colaborador</option>
+              <option>Recorrido</option>
+              <option>Investigación de incidente/accidente</option>
+            </select>
+          </label>
+
+          <label>Clasificación del riesgo
+            <select id="clasificacionRiesgo" required>
+              <option>Físico</option>
+              <option>Químico</option>
+              <option>Ergonómico</option>
+              <option>Biológico</option>
+              <option>Mecánico</option>
+              <option>Eléctrico</option>
+              <option>Psicosocial</option>
+              <option>Locativo</option>
+              <option>Natural</option>
+            </select>
+          </label>
+
+          <label>Conformidad/No conformidad
+            <select id="conformidad" required>
+              <option>Conformidad</option>
+              <option>No conformidad</option>
+            </select>
+          </label>
+
+          <div class="full actions">
+            <button type="submit">Guardar inspección</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Registros</h3>
+        <div class="toolbar">
+          <button id="downloadExcelBtn">Descargar Excel</button>
+          <select id="sucursalPdfSelect"></select>
+          <button id="downloadPdfBtn">Descargar PDF por sucursal</button>
+        </div>
+        <div class="table-wrap">
+          <table id="inspectionTable">
+            <thead>
+              <tr>
+                <th>ESTADO</th>
+                <th>Prioridad</th>
+                <th>Fecha de la inspección</th>
+                <th>Descripción</th>
+                <th>Responsable</th>
+                <th>Evidencia</th>
+                <th>Acción Correctiva</th>
+                <th>Fecha límite</th>
+                <th>Resultado</th>
+                <th>Empresa</th>
+                <th>Instalaciones</th>
+                <th>Área/Departamento</th>
+                <th>Controles Operacionales</th>
+                <th>Origen del Hallazgo</th>
+                <th>Clasificación del riesgo</th>
+                <th>Conformidad/No conformidad</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
